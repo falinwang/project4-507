@@ -8,6 +8,9 @@ Option 2: Building a Pong game with the Pyglet library
 ## About
 The project is about rewriting a 1-player Pong game. *The change I made here is changing the concept to hit the water ballons wall with the Brick! And it also shows updating scores when playing the game, also after fail or exit the game.* The water ballon wall is 6-deep floor-to-ceiling barricade of ballons.
 
+![Homepage](https://github.com/falinwang/project4-507/blob/master/screenshot.png)
+
+
 ## Dependencies
 ```
 future==0.17.1
@@ -47,4 +50,4 @@ Use your keyboard to control the paddle:
 - **P**: Pause the game
 - **R**: Reset the game
 
-To quit the game, press 'Q' or 'Esc'.
+To quit the game, press **Q** or **Esc**.
