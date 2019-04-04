@@ -65,10 +65,9 @@ class BallDeflector(GameObject):
 
 
 class Brick(BallDeflector):
-    __name__: "Brick"
-    brick_count = 0
+ww    brick_count = 0
     def __init__(self, img_file=None, initial_x=0, initial_y = 0, game = None):
-        super().__init__(img_file, initial_x, initial_y, game)
+        super(Brick, self).__init__(img_file, initial_x, initial_y, game)
         self.id = Brick.brick_count
         Brick.brick_count = Brick.brick_count +1
     def deflect_ball (self, ball, side_hit):
@@ -101,7 +100,7 @@ class EndLine(BallDeflector):
 
 class Ball(GameObject):
 
-    default_velocity = 10.0 #Number of pixels the ball should move per game cycle
+    default_velocity = 12.0 #Number of pixels the ball should move per game cycle
 
     def update(self,pressed_keys):
         self.move()
@@ -202,7 +201,7 @@ class Ball(GameObject):
 
 class Paddle (BallDeflector):
 
-    default_velocity = 4.0
+    default_velocity = 5.0
 
     def __init__(self, player = None, up_key =None, down_key =None, left_key = None, right_key = None,
         name = None, img_file = None,
@@ -450,7 +449,7 @@ def main():
     paddle_imgs = [pyglet.resource.image('paddle1.png')]
     wall_imgs = [pyglet.resource.image('vertical_wall.png'),
                  pyglet.resource.image('horizontal_wall.png'),
-                 pyglet.resource.image('brickpic.png')]
+                 pyglet.resource.image('brick.png')]
     window = GameWindow(ball_img,paddle_imgs, wall_imgs)
     debug_print("Done initializing window! Initializing app...")
 
