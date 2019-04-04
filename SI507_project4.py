@@ -65,7 +65,7 @@ class BallDeflector(GameObject):
 
 
 class Brick(BallDeflector):
-ww    brick_count = 0
+    brick_count = 0
     def __init__(self, img_file=None, initial_x=0, initial_y = 0, game = None):
         super(Brick, self).__init__(img_file, initial_x, initial_y, game)
         self.id = Brick.brick_count
@@ -129,19 +129,6 @@ class Ball(GameObject):
         return angle
 
     def colliding_with(self,game_object):
-        '''
-        self is a ball and game_object is some other game_object.
-        If their bounding boxes (the space they take up on screen) don't overlap,
-        return False.
-        If they do overlap, return one of 'LEFT', 'RIGHT', 'TOP', 'BOTTOM',
-        indicating which edge of game_object the ball has hit.
-
-        Note: this code is complicated, in part because of the geometric reasoning.
-        You don't have to understand how this method is implemented, but you will
-        need to understand what it does-- figure out which side of the game_object, if any,
-        the ball collided with first.
-        '''
-
         # x_distance is difference between rightmost object's left-side (x) and the other's right side (x+width)
         if (self.x < game_object.x):
             left, right = self, game_object
@@ -250,16 +237,16 @@ class Game(object):
 
     def __init__(self,
         ball_img = None,
-        paddle_imgs=None,
+        paddle_imgs = None,
         wall_imgs = None,
         width = 800,
         height = 450,
-        game_window=None,
+        game_window = None,
         wall_width = 10,
         paddle_width = 25,
         brick_height = 40):
 
-        self.score = [0,0]
+        self.score = 0
         self.width = width
         self.height = height
         self.game_window = game_window
@@ -308,7 +295,7 @@ class Game(object):
         bricks = [] # empty list for storing the brick objects to be later created
 
         for i in range(6):
-            brick_y = height - brick_height -1# set initial y coordinate of first brick to the top of the window minus brick side length, reset it for every x loop
+            brick_y = height - brick_height -1 # set initial y coordinate of first brick to the top of the window minus brick side length, reset it for every x loop
             for row in range(brickrows):
                 bricks.append(Brick(initial_x = brick_x, initial_y = brick_y, img_file = wall_imgs[2], game = self))
                 brick_y = brick_y - brick_height -1
@@ -321,28 +308,20 @@ class Game(object):
 
 
     def update(self,pressed_keys):
-        '''
-        Update the game based on the current state of its game objects and the set of keys currently
-        being pressed
-        :param pressed_keys: a set() object containing an int representing each key currently being pressed
-        The matching between numbers and keys is defined by Pyglet. For example, pyglet.window.key.W is
-        equal to 119
-        :return:
-        '''
         # debug_print('Updating game state with currently pressed keys : ' + str(pressed_keys))
         for game_object in self.game_objects:
             game_object.update(pressed_keys)
 
+
     def reset(self,pause=True):
         # self.score = [0,0]
+        print('Game over! Your score is ' + str(self.hit_count)+' points!\n\n')
         for game_object in self.game_objects:
             game_object.set_initial_position()
-
 
         self.hit_count = 0
         debug_print('Game reset')
         self.game_window.redraw()
-
         if pause:
             debug_print('Pausing. Hit P to unpause')
             self.game_window.pause()
@@ -364,10 +343,10 @@ class GameWindow(pyglet.window.Window):
         self.paused = False
         self.game = Game(ball_img,paddle_imgs, wall_imgs, width,height,self)
         self.currently_pressed_keys = set() #At any given moment, this holds the keys that are currently being pressed. This gets passed to Game.update() to help it decide how to move its various game objects
-        self.score_label = pyglet.text.Label('Score: 0 - 0',
+        self.score_label = pyglet.text.Label('Score: 0',
                           font_name='Times New Roman',
                           font_size=14,
-                          x=width-75, y=height-25,
+                          x=width-400, y=height-25,
                           anchor_x='center', anchor_y='center')
 
         # Decide how often we want to update the game, which involves
@@ -380,18 +359,9 @@ class GameWindow(pyglet.window.Window):
         pyglet.clock.set_fps_limit(self.fps)
 
     def on_key_press(self, symbol, modifiers):
-        '''
-        This is an overwrite of pyglet.window.Window.on_key_press()
-        This gets called by the pyglet engine whenever a key is pressed. Whenever that happens,
-        we want to add each key being pressed to the set of currently-pressed keys if it isn't
-        already in there
-        That's if the key pressed isn't 'Q' or 'Esc'. If it is, then just quit.
-        :param symbol: a single key identified as an int
-        :param modifiers: I don't know what this is. I am ignoring this.
-        :return:
-        '''
 
         if symbol == pyglet.window.key.Q or symbol == pyglet.window.key.ESCAPE:
+            print('Game over! Your score is ' + str(self.game.hit_count)+' points!\n\n')
             debug_print('Exit key detected. Exiting game...')
             pyglet.app.exit()
         elif symbol == pyglet.window.key.R:
@@ -429,27 +399,21 @@ class GameWindow(pyglet.window.Window):
         self.score_label.draw()
 
     def redraw_label(self):
-        self.score_label.text = 'Score: ' + str(self.game.score[0]) + ' - ' + str(self.game.score[1])
+        self.score_label.text = 'Score: ' + str(self.game.hit_count)
 
 
 def debug_print(string):
-    '''
-    A little convenience function that prints the string if the global debug variable is True,
-    and otherwise does nothing
-    :param string:
-    :return:
-    '''
     if debug:
         print(string)
 
 def main():
     debug_print("Initializing window...")
-    ball_img = pyglet.resource.image('ball.png')
+    ball_img = pyglet.resource.image('brickpic.png')
     # ball_img = pyglet.resource.image('vertical_wall.png')
     paddle_imgs = [pyglet.resource.image('paddle1.png')]
     wall_imgs = [pyglet.resource.image('vertical_wall.png'),
                  pyglet.resource.image('horizontal_wall.png'),
-                 pyglet.resource.image('brick.png')]
+                 pyglet.resource.image('water-balloons.jpg')]
     window = GameWindow(ball_img,paddle_imgs, wall_imgs)
     debug_print("Done initializing window! Initializing app...")
 
